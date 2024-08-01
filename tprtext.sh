@@ -117,6 +117,7 @@ function sql_text(){
             echo "** Depends on TPR_SNAPSHOT_TOP_SQL_CNT setting."
             echo -n "Enter a number (default 1-5): "
             read top_sql_cnt
+            echo
         fi
     }
 
@@ -229,6 +230,7 @@ function wait_event_text(){
         then
             echo -n "Enter a number (1-5): "
             read line_number_wait_event
+            echo
         fi
     }
     wait_event_text_filter
