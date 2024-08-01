@@ -10,6 +10,7 @@ function tprtext(){
     echo " -sql: SQL Text Analyzer"
     echo " -sql-detail: SQL TOP Pattern"
     echo " -wait : Wait Event Analyzer"
+    echo " -wait-detail: Wait Event TOp Pattern"
     echo ""
     echo "\$2"
     echo " TPR Text File or TPR File Path (only tpr file)"
@@ -32,7 +33,7 @@ function sql_text(){
         |grep -B50000 "8.4 SQL" \
         |grep -A7 "Overall Stats" \
         |sed -n '/----------/ {n;p;}'  \
-        |awk '{print $5"/"$6}' |awk '{print "TOP"NR" "$0}'
+        |awk '{print $5"/"$6}' |awk '{print "TOP"NR"  "$0}'
     }
 
     function type2(){
@@ -42,7 +43,7 @@ function sql_text(){
         |grep -B50000 "8.5 SQL" \
         |grep -A7 "Overall Stats" \
         |sed -n '/----------/ {n;p;}'  \
-        |awk '{print $5"/"$6}' |awk '{print "TOP"NR" "$0}'
+        |awk '{print $5"/"$6}' |awk '{print "TOP"NR"  "$0}'
     }
 
     function type3(){
@@ -52,7 +53,7 @@ function sql_text(){
         |grep -B50000 "8.6 SQL" \
         |grep -A7 "Overall Stats" \
         |sed -n '/----------/ {n;p;}'  \
-        |awk '{print $5"/"$6}' |awk '{print "TOP"NR" "$0}'
+        |awk '{print $5"/"$6}' |awk '{print "TOP"NR"  "$0}'
     }    
 
     function type4(){
@@ -62,7 +63,7 @@ function sql_text(){
         |grep -B50000 "8.7 SQL" \
         |grep -A7 "Overall Stats" \
         |sed -n '/----------/ {n;p;}'  \
-        |awk '{print $6"/"$7}' |awk '{print "TOP"NR" "$0}'
+        |awk '{print $6"/"$7}' |awk '{print "TOP"NR"  "$0}'
     }
 
     function type5(){
@@ -72,7 +73,7 @@ function sql_text(){
         |grep -B50000 "8.8 SQL" \
         |grep -A7 "Overall Stats" \
         |sed -n '/----------/ {n;p;}'  \
-        |awk '{print $6"/"$7}' |awk '{print "TOP"NR" "$0}'
+        |awk '{print $6"/"$7}' |awk '{print "TOP"NR"  "$0}'
     }
 
     function type6(){
@@ -85,7 +86,7 @@ function sql_text(){
         #    |grep -B50000 "8.9 SQL" \
         #    |grep -A7 "Overall Stats" \
         #    |sed -n '/----------/ {n;p;}'  \
-        #    |awk '{print $4"/"$5}' |awk '{print "TOP"NR" "$0}'
+        #    |awk '{print $4"/"$5}' |awk '{print "TOP"NR"  "$0}'
         #done        
     }            
 
@@ -96,7 +97,7 @@ function sql_text(){
         |grep -B50000 " 9. Etc Section" \
         |grep -A7 "Overall Stats" \
         |sed -n '/----------/ {n;p;}'  \
-        |awk '{print $4"/"$5}' |awk '{print "TOP"NR" "$0}'
+        |awk '{print $4"/"$5}' |awk '{print "TOP"NR"  "$0}'
     }
 
     function sql_text_filter(){
@@ -184,13 +185,36 @@ function sql_text(){
 }
 
 function wait_event_text(){
-    wait_event_text_loop(){
-
+    
+    function wait_event_text_loop(){
+        if [ "yes" == "$wait_event_detail" ]
+        then
+            for file_name in ${file_list[@]}
+            do
+                grep -A10 "3.3 Top 5" $file_name |grep -A6 "\--" |tail -n 5 |awk '{print "TOP"NR"  "$0}' | grep TOP$line_number_wait_event |sed 's/ /_/g' |sed 's/__/ /g' |awk '{print $2}'
+            done |sort |uniq -c |sort |awk '{print $2" "$1}' |sed 's/^_//g' |awk '{print $2" "$1}' |sed 's/_/ /g'
+        else
+            for file_name in ${file_list[@]}
+            do
+                echo
+                echo "TPR File Name: $file_name"
+                echo "                                                  Time          Wait          Avg           Waits       DB"
+                echo "                         Event            Waits  -outs(%)       Time(s)      Wait(ms)           /TX   Time(%)"
+                echo "------------------------------  ---------------  --------  ------------  ------------  ------------  --------"
+                grep -A10 "3.3 Top 5" $file_name |grep -A6 "\--" |tail -n 5
+            done
+        fi
     }
-    wait_event_text_filter(){
 
+    function wait_event_text_filter(){
+        if [ "yes" == "$wait_event_detail" ]
+        then
+            echo -n "TIBERO number Wait Event Top: "
+            read line_number_wait_event
+        fi
     }
-    grep -A10 "3.3 Top 5" thread0_20240719_203411_20240719_213411|grep -A6 "\--" |tail -n 5
+    wait_event_text_filter
+    wait_event_text_loop
 }
 
 arg1="$1"
@@ -199,8 +223,14 @@ arg2="$2"
  
 case $arg1 in 
     "-wait")
+        tpr_file
         wait_event_text
-        ;;    
+        ;;
+    "-wait-detail")
+        wait_event_detail="yes"
+        tpr_file
+        wait_event_text
+        ;;            
     "-sql")
         tpr_file
         sql_text
