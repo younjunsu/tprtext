@@ -1,19 +1,18 @@
 #!/bin/bash
 
 function tprtext(){
-    echo "------------------------------------"
-    echo " Tibero Performance Report Text Analyzer"
-    echo "$ ./tprtext \$1 \$2"
-    echo "ex $"
-    echo ""
-    echo "\$1"
-    echo " -sql: SQL Text Analyzer"
-    echo " -sql-detail: SQL TOP Pattern"
+    echo "###############################"
+    echo " TPR Text Analyzer"
+    echo "###############################"
+    echo "$ ./tprtext.sh [option1] [option2]
+    echo "-----------------------------"
+    echo " usage: ./tprtext.sh -sql text.tpr"
+    echo " usage: ./tprtext.sh -sql \"text2023*\""
+    echo "-----------------------------"
+    echo " -sql: SQL Text TOP Order by"
+    echo " -sql-detail: SQL TOP Line Number Count"
     echo " -wait : Wait Event Analyzer"
-    echo " -wait-detail: Wait Event TOp Pattern"
-    echo ""
-    echo "\$2"
-    echo " TPR Text File or TPR File Path (only tpr file)"
+    echo " -wait-detail: Wait Event Linue Number Count""
     echo "------------------------------------"
 }
 
