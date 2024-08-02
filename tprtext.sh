@@ -209,7 +209,7 @@ function wait_event_text(){
             printf "%*s\n" 40 | tr ' ' '-'
             for file_name in ${file_list[@]}
             do
-                grep -A10 "3.3 Top 5" $file_name |grep -A6 "\--" |tail -n 5 |awk '{print "TOP"NR"  "$0}' | grep TOP$line_number_wait_event |sed 's/ /_/g' |sed 's/__/ /g' |awk '{print $2}'
+                grep -A10 "Top 5 Wait" $file_name |grep -A6 "\--" |tail -n 5 |awk '{print "TOP"NR"  "$0}' | grep TOP$line_number_wait_event |sed 's/ /_/g' |sed 's/__/ /g' |awk '{print $2}'
             done |sort |uniq -c |sort |awk '{print $2" "$1}' |sed 's/^_//g' |awk '{printf "%-10s%-30s\n", $2, $1}' |sed 's/_/ /g'
         else
             for file_name in ${file_list[@]}
@@ -220,7 +220,7 @@ function wait_event_text(){
                 echo "                                                  Time          Wait          Avg           Waits       DB"
                 echo "                         Event            Waits  -outs(%)       Time(s)      Wait(ms)           /TX   Time(%)"
                 echo "------------------------------  ---------------  --------  ------------  ------------  ------------  --------"
-                grep -A10 "3.3 Top 5" $file_name |grep -A6 "\--" |tail -n 5
+                grep -A10 "Top 5 Wait" $file_name |grep -A6 "\--" |tail -n 5
             done
         fi
     }
