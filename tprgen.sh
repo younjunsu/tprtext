@@ -59,7 +59,7 @@ EOF
         function tpr_generator_execute(){
             tpr_generator_group="$1"
             tbsql sys/$sys_password -s <<EOF
-                tpr_generator_group
+                $tpr_generator_group
 EOF
         }
 
@@ -69,6 +69,8 @@ EOF
     }
 
     tpr_view_info
+    echo "go : (Y) : "
+    read gogo
     tpr_generator
     
 }
