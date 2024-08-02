@@ -10,7 +10,7 @@ function tprgen(){
     echo "-----------------------------"
     echo " [option1]"
     echo " -all"
-    echo " -time YYYMMDDhh24:mi:ss YYYYYMMDDhh24:mi:ss"
+    echo " -time YYYMMDDhh24miss YYYYYMMDDhh24miss"
     echo "-----------------------------"
 }
 
@@ -33,14 +33,15 @@ function tbsql_type(){
         select 
             snap_id, 
             to_char(begin_interval_time,'YYYYMMDDhh24miss') begin_interval_time,
-            to_char(end_interval_time,'YYYYMMDDhh24miss') end_interval_time
+            to_char(end_interval_time,'YYYYMMDDhh24miss') end_interval_time,
+            thread#
         from
             _tpr_snapshot
         where
             to_char(begin_interval_time,'YYYYMMDDhh24miss') >= $begin_time and
             to_char(end_interval_time,'YYYYMMDDhh24miss') <= $end_time
         order by
-            begin_interval_time;
+            thread#,begin_interval_time;
 EOF
     }
     
@@ -54,7 +55,7 @@ EOF
 
 function all_generator(){
     function tpr_view(){
-
+        echo ""
     }
     echo ""
 }
