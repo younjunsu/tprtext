@@ -27,13 +27,14 @@ function tbsql_type(){
 
 
     function tpr_view_info(){
-    tbsql sys/$sys_password <<EOF
+    tbsql sys/$sys_password -s <<EOF
         set pagesize 0
         set linesize 300
+        set feedback off
         select 
             snap_id, 
-            to_char(begin_interval_time,'YYYYMMDDhh24miss') begin_interval_time,
-            to_char(end_interval_time,'YYYYMMDDhh24miss') end_interval_time,
+            to_char(begin_interval_time,'YYYY/MM/DD hh24:mi:ss') begin_interval_time,
+            to_char(end_interval_time,'YYYY/MM/DD hh24:mi:ss') end_interval_time,
             thread#
         from
             _tpr_snapshot
@@ -50,7 +51,7 @@ EOF
 
 EOF
     }
-    
+    tpr_view_info
 }
 
 function all_generator(){
@@ -70,8 +71,8 @@ function time_generator(){
             echo "error"
         fi
     }
-    echo "gen"
     arg_format
+    tbsql_type
 
 }
 
