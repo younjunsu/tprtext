@@ -14,8 +14,48 @@ function tprgen(){
     echo "-----------------------------"
 }
 
+function tbsql_type(){
+    if [ -z "$begin_time" ]
+    then
+        begin_time="00000000000000"
+    fi
+
+    if [ -z "$end_time" ]
+    then
+        end_time="99991231115959"
+    fi
+
+
+    function tpr_view_info(){
+    tbsql sys/$sys_password <<EOF
+        set pagesize 0
+        set linesize 300
+        select 
+            snap_id, 
+            to_char(begin_interval_time,'YYYYMMDDhh24miss') begin_interval_time,
+            to_char(end_interval_time,'YYYYMMDDhh24miss') end_interval_time
+        from
+            _tpr_snapshot
+        where
+            to_char(begin_interval_time,'YYYYMMDDhh24miss') >= $begin_time and
+            to_char(end_interval_time,'YYYYMMDDhh24miss') <= $end_time
+        order by
+            begin_interval_time;
+EOF
+    }
+    
+    function tpr_generator(){
+    tbsql sys/$sys_password <<EOF
+
+EOF
+    }
+    
+}
 
 function all_generator(){
+    function tpr_view(){
+
+    }
     echo ""
 }
 
@@ -37,6 +77,9 @@ function time_generator(){
 arg1=$1
 arg2=$2
 arg3=$3
+
+echo -n "Enter SYS Password: "
+read sys_password
 
 case $arg1 in
     "-all")
