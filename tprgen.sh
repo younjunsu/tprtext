@@ -16,24 +16,38 @@ function tprgen(){
 }
 
 function tbsql_type(){
+    function tpr_connect(){
+        connected=`tbsql sys/$sys_password -s <<EOF
+            set pagesize 0
+            set head off
+            set feedback off
+            select 'connected' from dual;
+EOF`
+        if [ "connected" != "$connected" ]
+        then
+            echo "SYS Password Check"
+            exit 1
+        fi
+    }
+
     function tpr_view_info(){
-    tbsql sys/$sys_password -s <<EOF
-        set pagesize 0
-        set linesize 300
-        set feedback off
-        set head on
-        select 
-            snap_id, 
-            to_char(begin_interval_time,'YYYY/MM/DD hh24:mi:ss') begin_interval_time,
-            to_char(end_interval_time,'YYYY/MM/DD hh24:mi:ss') end_interval_time,
-            thread#
-        from
-            _tpr_snapshot
-        where
-            to_char(begin_interval_time,'YYYYMMDDhh24miss') >= $begin_time and
-            to_char(end_interval_time,'YYYYMMDDhh24miss') <= $end_time
-        order by
-            thread#,begin_interval_time;
+        tbsql sys/$sys_password -s <<EOF
+            set pagesize 0
+            set linesize 300
+            set feedback off
+            set head on
+            select 
+                snap_id, 
+                to_char(begin_interval_time,'YYYY/MM/DD hh24:mi:ss') begin_interval_time,
+                to_char(end_interval_time,'YYYY/MM/DD hh24:mi:ss') end_interval_time,
+                thread#
+            from
+                _tpr_snapshot
+            where
+                to_char(begin_interval_time,'YYYYMMDDhh24miss') >= $begin_time and
+                to_char(end_interval_time,'YYYYMMDDhh24miss') <= $end_time
+            order by
+                thread#,begin_interval_time;
 EOF
     }
     
@@ -67,11 +81,18 @@ EOF
         tpr_generator_execute "$tpr_generator_array"
 
     }
-
+    
+    tpr_connect
     tpr_view_info
-    echo "go : (Y) : "
-    read gogo
-    tpr_generator
+    echo "run: yes, stop: others key"
+    echo -n "Proceed ?"
+    read generator_input
+    if [ "yes" == "$generator_input" ]
+    then
+        tpr_generator
+    else
+        exit
+    fi
     
 }
 
@@ -89,10 +110,8 @@ function all_generator(){
     }
 
 
-    function tpr_view(){
-        echo ""
-    }
-    echo ""
+    all_arg_format
+    tbsql_type
 }
 
 function time_generator(){
