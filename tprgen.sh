@@ -1,21 +1,15 @@
 #!/bin/bash
 
-function tprtext(){
+function tprgen(){
     echo "###############################"
-    echo " TPR Text Analyzer"
+    echo " TPR Text Report Generator"
     echo "###############################"
-    echo "$ ./tprtext.sh [option1] [TPR]"
+    echo "$ ./tprtext.sh [option1]"
     echo "-----------------------------"
-    echo " usage: ./tprtext.sh -sql \"text.tpr\""
+    echo " usage: ./tprgen.sh [option1] "
     echo "-----------------------------"
-    echo "[option1]"
-    echo " -sql: SQL Text TOP Order by"
-    echo " -sql-detail: SQL TOP Line Number Count"
-    echo " -wait : Wait Event Analyzer"
-    echo " -wait-detail: Wait Event Linue Number Count"
-    echo ""
-    echo "[TPR]"
-    echo " \"text.tpr\" \#TPR File "
-    echo " \"text07*\" \#TPR File List "
+    echo " [option1]"
+    echo " -all"
+    echo " -time YYYMMDDhh24:mi:ss YYYYYMMDDhh24:mi:ss"
     echo "-----------------------------"
 }
