@@ -31,6 +31,7 @@ function tbsql_type(){
         set pagesize 0
         set linesize 300
         set feedback off
+        set head on
         select 
             snap_id, 
             to_char(begin_interval_time,'YYYY/MM/DD hh24:mi:ss') begin_interval_time,
