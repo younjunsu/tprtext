@@ -4,15 +4,20 @@ function tprgen(){
     echo "###############################"
     echo " TPR Text Report Generator"
     echo "###############################"
-    echo "$ ./tprtext.sh [option1]"
+    echo "$ ./tprtext.sh [option]"
     echo "-----------------------------"
-    echo " usage: ./tprgen.sh [option1] "
+    echo " usage: ./tprgen.sh [option] "
     echo "-----------------------------"
-    echo " [option1]"
+    echo " [option]"
     echo " -all"
     echo " -time BEGINTIME ENDTIME"
     echo "   format: YYYYYMMDDhh24miss"
     echo "-----------------------------"
+}
+
+function tbsql_login(){
+    echo -n "Enter SYS Password: "
+    read sys_password
 }
 
 function tbsql_type(){
@@ -159,12 +164,6 @@ function time_generator(){
 arg1=$1
 arg2=$2
 arg3=$3
-
-function tbsql_login(){
-    echo -n "Enter SYS Password: "
-    read sys_password
-}
-
 
 case $arg1 in
     "-all")

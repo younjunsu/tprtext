@@ -4,23 +4,23 @@ function tprtext(){
     echo "###############################"
     echo " TPR Text Analyzer"
     echo "###############################"
-    echo "$ ./tprtext.sh [option1] [TPR]"
+    echo "$ ./tprtext.sh [option] [TPR]"
     echo "-----------------------------"
     echo " usage: ./tprtext.sh -sql \"text.tpr\""
     echo "-----------------------------"
-    echo "[option1]"
-    echo " -sql: SQL Text TOP Order by"
-    echo " -sql-detail: SQL TOP Line Number Count"
-    echo " -wait : Wait Event Analyzer"
-    echo " -wait-detail: Wait Event Linue Number Count"
-    echo " -dml: DML Wait Event"
-    echo " -dml-detail: DML Wait Event Linue Number Count"
-    echo " -spinlock:"
-    echo " -spinlock-detail:"
+    echo "[options]"
+    echo " -wait"
+    echo " -wait-detail"
+    echo " -sqltop"
+    echo " -sqltop-detail"
+    echo " -ratio"
+    echo " -ratio-detail"   
+    echo " -sql"
+    echo " -sql-detail"
     echo ""
     echo "[TPR]"
-    echo " \"text.tpr\" \#TPR File "
-    echo " \"text07*\" \#TPR File List "
+    echo " \"text.tpr\" #TPR File "
+    echo " \"text07*\" #TPR File List "
     echo "-----------------------------"
 }
 
@@ -28,7 +28,7 @@ function tpr_file(){
     file_list=(`ls $arg2`)
 }
 
-function sql_text(){
+function sqltop_text(){
     function type_head(){
         if [ "yes" == "$sql_detail" ]
         then
@@ -36,7 +36,7 @@ function sql_text(){
             printf "%-10s\t" | tr ' ' '-'    
             printf "%-40s\n" | tr ' ' '-'
         else
-            printf "%-10s\t%-40s\n" " Number" "SQL VALUE" 
+            printf "%-10s\t%-40s\n" " TOP Number" "SQL VALUE" 
             printf "%-10s\t" | tr ' ' '-'    
             printf "%-40s\n" | tr ' ' '-'
         fi
@@ -115,8 +115,8 @@ function sql_text(){
         |awk '{print $4"/"$5}' |awk '{print "TOP"NR"  "$0}' |awk '{printf " %-10s\t%-40s\n", $1, $2}'
     }
 
-    function sql_text_filter(){
-        if [ "yes" == "$sql_detail" ]
+    function sqltop_text_filter(){
+        if [ "yes" == "$sqltop_detail" ]
         then
             echo "** Depends on TPR_SNAPSHOT_TOP_SQL_CNT setting."
             echo -n "Enter a number (default 1-5): "
@@ -125,13 +125,13 @@ function sql_text(){
         fi
     }
 
-    function sql_text_loop(){
-        if [ "yes" == "$sql_detail" ]
+    function sqltop_text_loop(){
+        if [ "yes" == "$sqltop_detail" ]
         then
             type_head
             for file_name in ${file_list[@]}
             do
-                type$sql_text_type
+                type$sqltop_text_type
             done |grep TOP$top_sql_cnt |sort |uniq -c |sort |awk '{printf " %-10s\t%-40s\n", $1, $3}'
         else
             for file_name in ${file_list[@]}
@@ -139,13 +139,13 @@ function sql_text(){
                 echo ""
                 echo "TPR File Name: $file_name"
                 type_head            
-                type$sql_text_type
+                type$sqltop_text_type
             done
         fi
     }
 
     echo "-----------------------------"
-    echo "0 - ALL"
+    echo "(Not yet) 0 - ALL"
     echo "1 - SQL Ordered by Elapsed Time"
     echo "2 - SQL Ordered by Elapsed Time per Execution"
     echo "3 - SQL Ordered by Executions"
@@ -155,48 +155,48 @@ function sql_text(){
     echo "7 - SQL Ordered by CPU"
     echo "-----------------------------"
     echo -n "Select a number (0-7): "
-    read sql_text_type
+    read sqltop_text_type
 
-    case $sql_text_type in
+    case $sqltop_text_type in
         "0")
-            sql_text_filter        
+            sqltop_text_filter        
             echo "SQL: ALL"
-            sql_text_loop
+            sqltop_text_loop
         ;;
         "1")
-            sql_text_filter        
+            sqltop_text_filter        
             echo "SQL Ordered by Elapsed Time"        
-            sql_text_loop
+            sqltop_text_loop
         ;;
         "2")
-            sql_text_filter        
+            sqltop_text_filter        
             echo "SQL Ordered by Elapsed Time per Execution"
-            sql_text_loop
+            sqltop_text_loop
         ;;
         "3")
-            sql_text_filter            
+            sqltop_text_filter            
             echo "SQL Ordered by Executions"  
-            sql_text_loop
+            sqltop_text_loop
         ;;                        
         "4")
-            sql_text_filter            
+            sqltop_text_filter            
             echo "SQL Ordered by Gets"        
-            sql_text_loop
+            sqltop_text_loop
         ;;        
         "5")
-            sql_text_filter            
+            sqltop_text_filter            
             echo "SQL Ordered by Reads"
-            sql_text_loop
+            sqltop_text_loop
         ;;
         "6")
-            sql_text_filter
+            sqltop_text_filter
             echo "SQL Ordered by Extra I/O"
-            sql_text_loop
+            sqltop_text_loop
         ;;        
         "7")
-            sql_text_filter
+            sqltop_text_filter
             echo "SQL Ordered by CPU"
-            sql_text_loop
+            sqltop_text_loop
         ;;              
         *)
             sql_text
@@ -241,6 +241,7 @@ function wait_event_text(){
     wait_event_text_loop
 }
 
+
 arg1="$1"
 arg2="$2"
 
@@ -255,14 +256,14 @@ case $arg1 in
         tpr_file
         wait_event_text
         ;;            
-    "-sql")
+    "-sqltop")
         tpr_file
-        sql_text
+        sqltop_text
         ;;
-    "-sql-detail")
-        sql_detail="yes"
+    "-sqltop-detail")
+        sqltop_detail="yes"
         tpr_file
-        sql_text
+        sqltop_text
         ;;
     *)
         tprtext
