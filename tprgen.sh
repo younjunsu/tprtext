@@ -32,7 +32,7 @@ EOF`
 
     function tpr_view_info(){
         tbsql sys/$sys_password -s <<EOF
-            set pagesize 0
+            set pagesize 5000
             set linesize 300
             set feedback off
             set head on
@@ -48,6 +48,23 @@ EOF`
                 to_char(end_interval_time,'YYYYMMDDhh24miss') <= $end_time
             order by
                 thread#,begin_interval_time;
+EOF
+    echo "-----------------------------"
+    echo " TPR COUNT"
+    echo "-----------------------------"
+        tbsql sys/$sys_password -s <<EOF
+            set pagesize 5000
+            set linesize 300
+            set feedback off
+            select 
+                thread#, count(*)         
+            from
+                _tpr_snapshot
+            where
+                to_char(begin_interval_time,'YYYYMMDDhh24miss') >= $begin_time and
+                to_char(end_interval_time,'YYYYMMDDhh24miss') <= $end_time
+            group by
+                thread#;
 EOF
     }
     
@@ -108,8 +125,6 @@ function all_generator(){
             end_time="99991231115959"
         fi
     }
-
-
     all_arg_format
     tbsql_type
 }
