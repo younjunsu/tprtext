@@ -13,6 +13,8 @@ function tprtext(){
     echo " -wait-detail"
     echo " -sqltop"
     echo " -sqltop-detail"
+    echo " -spinlock"
+    echo " -spinlock-detail"
     echo " (Not Yet) -ratio"
     echo " (Not Yet) -ratio-detail"   
     echo " (Not Yet) -sql"
